@@ -1,6 +1,3 @@
-<<<<<<< HEAD
 dev
 hello
-=======
 master
->>>>>>> master
