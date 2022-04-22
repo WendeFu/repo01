@@ -1,0 +1,52 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/mvc
+    http://www.springframework.org/schema/mvc/spring-mvc.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="com.lagou"/>
+
+    <!--处理器映射器和处理器适配器功能增强  支持JSON的读写-->
+    <mvc:annotation-driven conversion-service="conversionService"/>
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="com.lagou.converter.DateConverter"/>
+            </set>
+        </property>
+    </bean>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="5242880"/>
+        <property name="maxInMemorySize" value="40960"/>
+    </bean>
+
+    <bean id="globalExceptionResovler" class="com.lagou.exception.GlobalExceptionResolver"></bean>
+    
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/*"/> <!-- 拦截本目录 -->
+            <bean class="com.lagou.interceptor.MyInterceptor"/>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/> <!-- 拦截本目录及子目录 -->
+            <bean class="com.lagou.interceptor.MyInterceptor2"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <!--<mvc:resources mapping="/js/**" location="/js/"/>-->
+
+    <mvc:default-servlet-handler/>
+
+</beans>
